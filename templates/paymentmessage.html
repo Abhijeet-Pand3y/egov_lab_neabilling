@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    {% if messages %}
+      <a href="/">
+        <div class="alert alert-primary" role="alert">
+            {% for message in messages %}
+            <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+      </a>
+    {% endif %}
+      
+{% endblock content %}

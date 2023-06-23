@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>{{customer.full_name}}</h2>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>S.N</th>
+            <th>Bill No</th>
+            <th>Bill Amount</th>
+            <th>Bill Month</th>
+            <th>Bill Year</th>
+            <th>Current Reading</th>
+            <th>Previous Reading</th>
+            <th>Payment</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if bills %}
+            {% for bill in bills %}
+                <tr>
+                    <th>{{forloop.counter}}</th>
+                    <td>{{bill.id}}</td>
+                    <td>{{bill.bill_amount}}</td>
+                    <td>{{bill.bill_month}}</td>
+                    <td>{{bill.bill_year}}</td>
+                    <td>{{bill.current_reading}}</td>
+                    <td>{{bill.prev_reading}}</td>
+                    
+                    <td>
+                        {% if bill.payment_status %}
+                            <a href={% url 'payment:payment_detail' bill.id%}>
+                                Paid
+                            </a>
+                        {% else %}
+                            <a href={% url 'payment:payment' bill.id%}>
+                                Not Paid
+                            </a>
+                        {% endif %}
+                    </td>
+                    
+                </tr>
+            {% endfor %}
+
+        {% else %}
+
+        {% endif %}
+    </tbody>
+</table>
+
+{% endblock content %}

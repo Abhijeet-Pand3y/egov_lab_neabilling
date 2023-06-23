@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% if payments %}
+    <dl class="row">
+        {% for payment in  payments%}
+            <dt class="col-sm-3">Bill No</dt>
+            <dd class="col-sm-9">{{payment.bill_id}}</dd>
+            <dt class="col-sm-3">Payment Amount</dt>
+            <dd class="col-sm-9">{{payment.payment_amount}}</dd>
+            <dt class="col-sm-3">Rebate Amount</dt>
+            <dd class="col-sm-9">{{payment.rebeat_amount}}</dd>
+            <dt class="col-sm-3">Fine Amount</dt>
+            <dd class="col-sm-9">{{payment.fine_amount}}</dd>
+            <dt class="col-sm-3">Payment Date</dt>
+            <dd class="col-sm-9">{{payment.payment_date}}</dd>
+            <dt class="col-sm-3">Payment Option Used</dt>
+            <dd class="col-sm-9">{{payment.payment_option.name}}</dd>
+        {% endfor %}
+  </dl>
+{% else %}
+  Payment Not found
+{% endif %}
+{% endblock content %}

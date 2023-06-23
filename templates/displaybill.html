@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{{customer.full_name}}</h1>
+    <hr>
+        <h2>Bill</h2>
+        {% if bills %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Bill No</th>
+                        <th>Year</th>
+                        <th>Month</th>
+                        <th>Current Reading</th>
+                        <th>Previous Reading</th>
+                        <th>Bill Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for bill in bills %}
+                        <tr>
+                            <td>{{bill.id}}</td>
+                            <td>{{bill.bill_year}}</td>
+                            <td>{{bill.bill_month}}</td>
+                            <td>{{bill.current_reading}}</td>
+                            <td>{{bill.prev_reading}}</td>
+                            <td>{{bill.bill_amount}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No Bills</p>
+            <hr>
+        {% endif %}
+        
+        <h2>Payment</h2>    
+        {% if payments %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Payment Date</th>
+                        <th>Payment Amount</th>
+                        <th>Rebeat Amount</th>
+                        <th>Fine Amount</th>
+                        <th>Bill No</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for payment in payments %}
+                        <tr>
+                            <td>{{payment.payment_date}}</td>
+                            <td>{{payment.payment_amount}}</td>
+                            <td>{{payment.rebeat_amount}}</td>
+                            <td>{{payment.fine_amount}}</td>
+                            <td>{{payment.bill.id}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No Payments</p>
+        {% endif %}
+{% endblock content %}

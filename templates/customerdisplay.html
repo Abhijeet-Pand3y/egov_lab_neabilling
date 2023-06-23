@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Customers List</h1>
+        {% if customers %}
+        
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>S.N</th>
+                    <th>Name</th>
+                    <th>Address</th>
+                    <th>Phone Number</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for customer in customers %}  
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>
+                            <a href={% url 'bill:display_user' customer.id %} class="no-style"> {{ customer.full_name }}</a>
+                        </td>
+                        <td>{{ customer.address }}</td>
+                        <td>{{ customer.mobile_no }}</td>
+                    </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No customers found.</p>
+    {% endif %}
+{% endblock content %}

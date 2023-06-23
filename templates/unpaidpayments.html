@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<script src="https://khalti.s3.ap-south-1.amazonaws.com/KPG/dist/2020.12.17.0.0.0/khalti-checkout.iffe.js"></script>
+{% if bills %}
+    <dl class="row">
+        {% for bill in  bills%}
+            <dt class="col-sm-3">Bill No</dt>
+            <dd class="col-sm-9">{{bill.id}}</dd>
+            <dt class="col-sm-3">Bill Amount</dt>
+            <dd class="col-sm-9">{{bill.bill_amount}}</dd>
+            <dt class="col-sm-3">Current Reading</dt>
+            <dd class="col-sm-9">{{bill.current_reading}}</dd>
+            <dt class="col-sm-3">Previous Reading</dt>
+            <dd class="col-sm-9">{{bill.prev_reading}}</dd>
+            <dt class="col-sm-3">Payment Option</dt>
+            <dd class="col-sm-9">
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Payment Options
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li><button class="dropdown-item" id="payment-button" >KHALTI</button></li>
+                      <li><a class="dropdown-item" href="#">eSewa</a></li>
+                      <li><a class="dropdown-item" href="#">fone Pay</a></li>
+                    </ul>
+                  </div>
+            </dd>
+            <input type="hidden" id="bill-id" value="{{ bill.id }}">
+            <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+            <script>
+                var config = {
+                    // replace the publicKey with yours
+                    "publicKey": "test_public_key_2714765a49ac4507865f6be573e779a1",
+                    "productIdentity": {{bill.id}},
+                    "productName": {{bill.id}},
+                    "productUrl": "http://127.0.0.1:8000/",
+                    "paymentPreference": [
+                        "KHALTI",
+                        "EBANKING",
+                        "MOBILE_BANKING",
+                        "CONNECT_IPS",
+                        "SCT",
+                        ],
+                    "eventHandler": {
+                        onSuccess (payload) {
+                            // hit merchant api for initiating verfication
+                            console.log(payload);
+                            axios.defaults.baseURL = 'http://127.0.0.1:8000/';
+                            var billId = document.getElementById("bill-id").value;
+                            axios.get("{% url 'payment:khalti_payment_verify' %}",{
+                                params: {
+                                    "token": payload.token,
+                                    "bill_id": billId,
+                                    "amount": payload.amount,
+                                }
+                            }).then(function(resp){
+                                console.log(resp.data)
+                                window.location.href = "{% url 'payment:message' %}";
+                            })
+                        },
+                        onError (error) {
+                            console.log(error);
+                        },
+                        onClose () {
+                            console.log('widget is closing');
+                        }
+                    }
+                };
+        
+                var checkout = new KhaltiCheckout(config);
+                var btn = document.getElementById("payment-button");
+                btn.onclick = function () {
+                    // minimum transaction amount must be 10, i.e 1000 in paisa.
+                    checkout.show({amount: {{bill.bill_amount}}*100});
+                }
+            </script>
+        {% endfor %}
+  </dl>
+{% else %}
+  Bill Not found
+{% endif %}
+
+{% if messages %}
+      <div class="alert alert-primary" role="alert">
+          {% for message in messages %}
+          <p>{{ message }}</p>
+          {% endfor %}
+      </div>
+{% endif %}
+{% endblock content %}
+
